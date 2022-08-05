@@ -6,7 +6,7 @@
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 13:33:35 by chukim            #+#    #+#             */
-/*   Updated: 2022/07/26 20:36:01 by junkpark         ###   ########.fr       */
+/*   Updated: 2022/08/03 19:20:35 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include<stdlib.h>
 # include<unistd.h>
+# include"../minishell.h"
 
 typedef struct s_list
 {
@@ -68,5 +69,6 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int		ft_isspace(char c);
 int		ft_strcmp(char *s1, char *s2);
+char	*ft_strndup(const char *s, size_t n);
 
 #endif

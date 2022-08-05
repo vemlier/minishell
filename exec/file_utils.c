@@ -1,33 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   file_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 13:35:52 by chukim            #+#    #+#             */
-/*   Updated: 2022/08/04 15:17:13 by junkpark         ###   ########.fr       */
+/*   Created: 2022/08/03 16:07:55 by junkpark          #+#    #+#             */
+/*   Updated: 2022/08/03 17:26:11 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_cmd *cmd)
+void	ft_close(int fd)
 {
-	t_env	*current;
-
-	if (cmd->argc >= 2)
-	{
-		print_err("env", cmd->argv[1], "too many arguments");
-		g_errno = 127;
+	if (fd == 0 || fd == 1 || fd == 2)
 		return ;
-	}
-	current = cmd->envp_copy;
-	while (current->next != NULL)
+	close(fd);
+}
+
+void	ft_dup2(int fd1, int fd2)
+{
+	if (fd1 == 0 || fd1 == 1 || fd1 == 2)
+		return ;
+	dup2(fd1, fd2);
+	ft_close(fd1);
+}
+
+int	is_excutable(char *path)
+{
+	struct stat	sb;
+
+	if (stat(path, &sb) == -1)
+		return (0);
+	if (S_ISDIR(sb.st_mode))
 	{
-		if ((current->value != NULL))
-			printf("%s=%s\n", current->key, current->value);
-		current = current->next;
+		errno = EISDIR;
+		return (0);
 	}
-	g_errno = 0;
+	if (sb.st_mode & S_IXUSR)
+		return (1);
+	else
+		errno = EACCES;
+	return (0);
 }

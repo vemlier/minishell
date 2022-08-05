@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/21 09:42:37 by chukim            #+#    #+#             */
-/*   Updated: 2022/08/03 19:24:31 by junkpark         ###   ########.fr       */
+/*   Created: 2022/08/02 21:48:00 by junkpark          #+#    #+#             */
+/*   Updated: 2022/08/03 13:59:44 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+size_t	get_cnt_of_pipe(t_token *token)
 {
-	char	*substr;
+	size_t	i;
+	size_t	cnt;
 
-	if (s == NULL)
-		return (NULL);
-	if (ft_strlen(s) < start)
-		return (ft_strdup(""));
-	substr = (char *)ft_calloc(sizeof(char), (len + 1));
-	if (substr == NULL)
-		return (NULL);
-	ft_strlcpy(substr, s + start, len + 1);
-	return (substr);
+	i = 0;
+	cnt = 0;
+	while (token[i].type)
+	{
+		if (token[i].type == T_PIPE)
+			cnt++;
+		i++;
+	}
+	return (cnt);
 }

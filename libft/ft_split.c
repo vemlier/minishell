@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chukim <chukim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 10:57:18 by chukim            #+#    #+#             */
-/*   Updated: 2021/11/21 12:49:28 by chukim           ###   ########.fr       */
+/*   Updated: 2022/08/03 19:23:58 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	ft_wordcount(const char *s, char c);	
+static size_t	ft_wordcount(const char *s, char c);
 static char		*ft_makestr(const char *s1, char c, size_t *flag);
-static char		*ft_strndup(const char *s, size_t len);
 static char		**ft_error(char **s);
 
 char	**ft_split(char const *s, char c)
@@ -27,7 +26,7 @@ char	**ft_split(char const *s, char c)
 
 	i = -1;
 	strindex = 0;
-	str = (char **)malloc(sizeof(char *) * (ft_wordcount(s, c) + 1));
+	str = (char **)ft_calloc(sizeof(char *), (ft_wordcount(s, c) + 1));
 	if (str == NULL)
 		return (NULL);
 	while (s[++i])
@@ -90,27 +89,6 @@ static char	*ft_makestr(const char *s1, char c, size_t *flag)
 		i++;
 	}
 	return (NULL);
-}
-
-static char	*ft_strndup(const char *s, size_t len)
-{
-	char	*str;
-	size_t	i;
-
-	str = NULL;
-	i = 0;
-	if (len == 0)
-		return (NULL);
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (str == NULL)
-		return (NULL);
-	while (i < len)
-	{
-		str[i] = s[i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
 }
 
 static char	**ft_error(char **s)

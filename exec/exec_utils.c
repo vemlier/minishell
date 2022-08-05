@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/21 09:42:37 by chukim            #+#    #+#             */
-/*   Updated: 2022/08/03 19:24:31 by junkpark         ###   ########.fr       */
+/*   Created: 2022/08/03 15:57:04 by junkpark          #+#    #+#             */
+/*   Updated: 2022/08/03 16:09:44 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+size_t	get_cnt_of_cmd(t_cmd *cmd)
 {
-	char	*substr;
+	size_t	i;
 
-	if (s == NULL)
-		return (NULL);
-	if (ft_strlen(s) < start)
-		return (ft_strdup(""));
-	substr = (char *)ft_calloc(sizeof(char), (len + 1));
-	if (substr == NULL)
-		return (NULL);
-	ft_strlcpy(substr, s + start, len + 1);
-	return (substr);
+	i = 0;
+	while (cmd[i].token)
+		i++;
+	return (i);
 }

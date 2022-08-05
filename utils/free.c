@@ -6,7 +6,7 @@
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 20:12:50 by junkpark          #+#    #+#             */
-/*   Updated: 2022/07/26 20:13:49 by junkpark         ###   ########.fr       */
+/*   Updated: 2022/08/04 17:06:00 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,18 @@ void	free_cmd(t_cmd **cmd)
 	}
 	free((*cmd)[i].argv);
 	free(*cmd);
+}
+
+void	free_env_path(char ***env_path)
+{
+	size_t	i;
+
+	i = 0;
+	while ((*env_path)[i])
+	{
+		free((*env_path)[i]);
+		i++;
+	}
+	free((*env_path)[i]);
+	free(*env_path);
 }

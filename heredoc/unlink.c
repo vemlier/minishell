@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   unlink.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/22 12:50:42 by chukim            #+#    #+#             */
-/*   Updated: 2022/07/23 20:24:45 by junkpark         ###   ########.fr       */
+/*   Created: 2022/08/03 13:38:17 by junkpark          #+#    #+#             */
+/*   Updated: 2022/08/04 14:36:01 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signal(int signo)
+void	unlink_all(t_cmd *cmd)
 {
-	if (signo == SIGINT)
-	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else if (signo == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
+	int		i;
+	int		j;
+	size_t	tmp_file_cnt;
 
-void	set_signal(void)
-{
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
+	i = 0;
+	tmp_file_cnt = 0;
+	while (cmd[i].token)
+	{
+		j = 0;
+		while (cmd[i].token[j].type)
+		{
+			if (cmd[i].token[j].type == T_REDIRECT
+				&& ft_strcmp(cmd[i].token[j].str, "<<") == 0)
+				unlink(cmd[i].token[j + 1].str);
+			j++;
+		}
+		i++;
+	}
 }

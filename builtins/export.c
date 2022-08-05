@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chukim <chukim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:36:19 by chukim            #+#    #+#             */
-/*   Updated: 2022/07/28 11:29:34 by chukim           ###   ########.fr       */
+/*   Updated: 2022/08/04 19:53:52 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	is_vaild_export(char *argv)
 	{
 		if (argv[i] == '=')
 			flag = 1;
-		if ((!ft_isalnum(argv[i]) && argv[i] != '=' && argv[i] != ' ')
-			|| (argv[i] == ' ' && flag == 0))
+		if (!ft_isalnum(argv[i]) && argv[i] != '='
+			&& argv[i] != '_' && flag == 0)
 			return (0);
 	}
 	return (1);
@@ -39,20 +39,25 @@ void	add_or_update_env(char *str, t_env *envp)
 
 	key_value = divide_with_equal(str);
 	current = envp;
-	while (current != NULL)
+	while (current->key != NULL)
 	{
-		if (ft_strncmp(current->key, key_value[0],
-				ft_strlen(key_value[0])) == 0)
+		if (ft_strcmp(current->key, key_value[0]) == 0)
 		{
-			free(current->key);
-			free(current->value);
-			current->key = key_value[0];
-			current->value = key_value[1];
+			if (current->value != NULL && key_value[1] == NULL)
+				free(key_value[1]);
+			else
+			{
+				free(current->value);
+				current->value = key_value[1];
+			}
+			free(key_value[0]);
+			free(key_value);
 			return ;
 		}
 		current = current->next;
 	}
 	add_env(envp, key_value[0], key_value[1]);
+	free(key_value);
 }
 
 void	ft_export(t_cmd *cmd)
@@ -67,9 +72,13 @@ void	ft_export(t_cmd *cmd)
 		while (cmd->argv[i] != NULL)
 		{
 			if (is_vaild_export(cmd->argv[i]) != 0)
+			{
 				add_or_update_env(cmd->argv[i], cmd->envp_copy);
+				g_errno = 0;
+			}
 			else
-				exit_with_err("export", "not a valid identifier", 1, 0);
+				exit_with_err_second("export", cmd->argv[i],
+					"not a valid identifier", 1);
 			i++;
 		}
 	}

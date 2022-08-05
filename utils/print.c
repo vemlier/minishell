@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chukim <chukim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 11:27:44 by chukim            #+#    #+#             */
-/*   Updated: 2022/07/28 11:29:38 by chukim           ###   ########.fr       */
+/*   Updated: 2022/08/03 19:37:54 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	print_end(char c, int flag)
+{
+	if (c == '=' && flag == 0)
+		printf("\"\"");
+	if (flag == 1)
+		printf("\"\n");
+	else
+		printf("\n");
+}
 
 int	compare_str(char *str1, char *str2)
 {
@@ -45,7 +55,7 @@ void	print_str_arr(char *argv[])
 		printf("declare -x ");
 		while (argv[i][j] != '\0')
 		{
-			if (argv[i][j] == '=' && flag != 1)
+			if (argv[i][j - 1] == '=' && flag != 1)
 			{
 				printf("\"");
 				flag = 1;
@@ -53,8 +63,7 @@ void	print_str_arr(char *argv[])
 			printf("%c", argv[i][j]);
 			j++;
 		}
-		printf("\"");
-		printf("\n");
+		print_end(argv[i][j - 1], flag);
 		flag = 0;
 		i++;
 	}
@@ -65,22 +74,26 @@ void	print_export(t_cmd *cmd)
 	size_t	i;
 	size_t	j;
 	char	*temp;
+	char	**tmp;
 
+	tmp = \
+		get_envp_copy_arr_with_null(cmd->envp_copy);
 	i = 0;
-	while (cmd->envp_copy_arr[i] != NULL)
+	while (tmp[i] != NULL)
 	{
 		j = i + 1;
-		while (cmd->envp_copy_arr[j] != NULL)
+		while (tmp[j] != NULL)
 		{
-			if (compare_str(cmd->envp_copy_arr[i], cmd->envp_copy_arr[j]) == 0)
+			if (compare_str(tmp[i], tmp[j]) == 0)
 			{
-				temp = cmd->envp_copy_arr[i];
-				cmd->envp_copy_arr[i] = cmd->envp_copy_arr[j];
-				cmd->envp_copy_arr[j] = temp;
+				temp = tmp[i];
+				tmp[i] = tmp[j];
+				tmp[j] = temp;
 			}
 			j++;
 		}
 		i++;
 	}
-	print_str_arr(cmd->envp_copy_arr);
+	print_str_arr(tmp);
+	free_envp_copy_arr(&tmp);
 }

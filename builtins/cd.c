@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chukim <chukim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 13:36:09 by chukim            #+#    #+#             */
-/*   Updated: 2022/07/28 11:26:10 by chukim           ###   ########.fr       */
+/*   Updated: 2022/08/04 19:53:10 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	set_pwd(t_env *envp)
 	old_pwd = ft_strjoin("OLDPWD=", get_env(envp, "PWD"));
 	add_or_update_env(cur_pwd, envp);
 	add_or_update_env(old_pwd, envp);
+	free(tmp);
 	free(cur_pwd);
 	free(old_pwd);
 }
@@ -34,43 +35,36 @@ void	cd_home(t_cmd *cmd)
 	path = get_env(cmd->envp_copy, "HOME");
 	if (cmd->argv[1] == NULL)
 	{
-		if (chdir(path) == -1)
-			exit_with_err("cd", "HOME not set", 2, 0);
+		if (chdir(path) == -1
+			&& (strcmp(get_env(cmd->envp_copy, "HOME"), "") == 0))
+			exit_with_err("cd", "HOME not set", 1, 0);
+		else if (chdir(path) == -1)
+			exit_with_err_second("cd", path, "No such file or directory", 1);
+		else
+			g_errno = 0;
 	}
-	else if (cmd->argv[1][1] == '~')
-		exit_with_err("cd", "No such file or directory", 2, 0);
 	else
 	{
 		if (chdir(getenv("HOME")) == -1)
-			exit_with_err("cd", "No such file or directory", 2, 0);
+			exit_with_err_second("cd", path, "No such file or directory", 1);
+		else
+			g_errno = 0;
 	}
-}
-
-void	cd_env(t_cmd *cmd)
-{
-	char	*path;
-
-	path = get_env(cmd->envp_copy, &(cmd->argv[1][1]));
-	if (chdir(path) == -1)
-		chdir(get_env(cmd->envp_copy, "HOME"));
 }
 
 void	ft_cd(t_cmd *cmd)
 {
 	char	*path;
 
-	if (cmd->argv[1] != NULL && cmd->argv[1][0]
-		!= '~' && cmd->argv[1][0] != '$')
+	if (cmd->argv[1] != NULL)
 	{
 		path = cmd->argv[1];
 		if (chdir(path) == -1)
-			exit_with_err(path, "No such file or directory", 2, 0);
+			exit_with_err_second("cd", path, strerror(errno), 1);
+		else
+			g_errno = 0;
 		set_pwd(cmd->envp_copy);
 	}
-	else if (cmd->argv[1] == NULL || cmd->argv[1][0] == '~')
-	{
+	else if (cmd->argv[1] == NULL)
 		cd_home(cmd);
-	}
-	else if (cmd->argv[1][0] == '$')
-		cd_env(cmd);
 }

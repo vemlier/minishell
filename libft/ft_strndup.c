@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: junkpark <junkpark@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/21 09:42:37 by chukim            #+#    #+#             */
-/*   Updated: 2022/08/03 19:24:31 by junkpark         ###   ########.fr       */
+/*   Created: 2022/08/02 19:24:31 by junkpark          #+#    #+#             */
+/*   Updated: 2022/08/03 19:23:32 by junkpark         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_strndup(const char *s, size_t n)
 {
-	char	*substr;
+	size_t	i;
+	char	*str;
 
-	if (s == NULL)
+	i = 0;
+	str = NULL;
+	if (n == 0)
 		return (NULL);
-	if (ft_strlen(s) < start)
-		return (ft_strdup(""));
-	substr = (char *)ft_calloc(sizeof(char), (len + 1));
-	if (substr == NULL)
+	str = (char *)ft_calloc(sizeof(char), (n + 1));
+	if (str == 0)
 		return (NULL);
-	ft_strlcpy(substr, s + start, len + 1);
-	return (substr);
+	while (i < n)
+	{
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
 }
